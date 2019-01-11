@@ -1,47 +1,49 @@
 import React from 'react';
+
 import TodoItem from './TodoItem';
 import { COMPLETED, REMAINING } from '../constants/Utils';
 
+const TodoList = (props) => {
+  const {
+    todos,
+    filter,
+    search,
+    editTodoItem,
+    deleteTodoItem,
+    changeCompletion,
+  } = props;
+  const pat = new RegExp(search);
+  const todoItems = todos.map((item) => {
+    if (filter === COMPLETED && !item.isCompleted) {
+      return '';
+    }
 
-class TodoList extends React.Component {
+    if (filter === REMAINING && item.isCompleted) {
+      return '';
+    }
 
-  render() {
-    const todos = this.props.todos;
-    const changeCompletion = this.props.changeCompletion;
-
-    const filter = this.props.filter;
-
-    const todoItems = todos.map((item, index) => {
-      item.index = index;
-      if (filter === COMPLETED && !item.isCompleted) {
-        return '';
-      }
-      else if (filter === REMAINING && item.isCompleted) {
-        return '';
-      }
-      let pat = new RegExp(this.props.search);
-      // console.log(pat);
-      if (pat && !pat.test(item.title)) {
-        // console.log('(' + this.props.search + ') +');
-        return '';
-      }
-      return (<li key={item.id.toString()} className='list-group-item'>
-
-        {<TodoItem
-          item={item}
-          changeCompletion={changeCompletion}
-          deleteTodoItem={this.props.deleteTodoItem}
-          editTodoItem={this.props.editTodoItem}
-        />}
-      </li>);
-    });
-
+    if (pat && !pat.test(item.title)) {
+      return '';
+    }
     return (
-      <ul className='list-group todo-ul'>
-        {todoItems}
-      </ul>
+      <li key={item.id.toString()} className='list-group-item'>
+        {
+          <TodoItem
+            item={item}
+            editTodoItem={editTodoItem}
+            deleteTodoItem={deleteTodoItem}
+            changeCompletion={changeCompletion}
+          />
+        }
+      </li>
     );
-  }
+  });
+
+  return (
+    <ul className='list-group todo-ul'>
+      {todoItems}
+    </ul>
+  );
 }
 
 export default TodoList;
