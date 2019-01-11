@@ -29,24 +29,24 @@ class TodoItem extends React.Component {
     const isComplete = item.isCompleted ? 'checked' : '';
 
     return (
-      <>
-        <div className='container-content-v-center left'>
+      <div className='row'>
+        <div className='container-content-v-center left col-sm-8'>
           <input className='left' type='radio' checked={isComplete} onChange={this.handleChecked} />
-          <div className='left'>
-            <p>{text}</p>
+          <div className='left todo-text'>
+            <p className={item.isCompleted ? 'completed-item' : ''}>{text}</p>
             <small className='text-muted'>Created At: {item.createdAt}</small>
 
           </div>
 
         </div>
 
-        <span className="badge badge-primary badge-pill action-btns">
+        <span className="badge badge-primary badge-pill action-btns col-sm-4">
           <button className='btn btn-primary' onClick={(event) => this.props.editTodoItem(item.index)}>Edit</button>
           <button className='btn btn-primary' onClick={(event) => this.props.deleteTodoItem(item.index)}>Delete</button>
         </span>
 
 
-      </>
+      </div>
     );
   }
 }

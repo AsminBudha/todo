@@ -23,7 +23,6 @@ class Tabs extends React.Component {
 
   render() {
     const tab = this.props.tab;
-    // console.log(tab);
     return (
       <div className='row tabs'>
         <button className={'col-sm btnWithoutStyle ' + (tab === -1 && 'active')} value='home' onClick={this.handleClick}>Home</button>

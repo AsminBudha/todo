@@ -19,7 +19,13 @@ class TodoList extends React.Component {
       else if (filter === REMAINING && item.isCompleted) {
         return '';
       }
-      return (<li key={index.toString()} className='list-group-item'>
+      let pat = new RegExp(this.props.search);
+      // console.log(pat);
+      if (pat && !pat.test(item.title)) {
+        // console.log('(' + this.props.search + ') +');
+        return '';
+      }
+      return (<li key={item.id.toString()} className='list-group-item'>
 
         {<TodoItem
           item={item}
@@ -31,7 +37,7 @@ class TodoList extends React.Component {
     });
 
     return (
-      <ul className='list-group'>
+      <ul className='list-group todo-ul'>
         {todoItems}
       </ul>
     );

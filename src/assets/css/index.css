@@ -16,12 +16,14 @@ code {
 .myContainer{
   padding: 0px 15px;
 }
+
 .wrapper{
-  max-width: 50%;
+  max-width: 100%;
   background: blue;
   padding-left: 0px;
   padding-right: 0px;
 }
+
 
 .btnWithoutStyle{
   background: transparent;
@@ -35,9 +37,7 @@ code {
 }
 .btnWithoutStyle.active{
   border: 1px solid #adb5bd;/*2px solid gray;*/
-  border-bottom: transparent;
-  border-top-left-radius: 5%;
-  border-top-right-radius: 5%;
+
 }
 .tabs{
   /* border-bottom: 2px solid gray; */
@@ -51,6 +51,7 @@ code {
 }
 .action-btns{
   float: right;
+  display: inline-table;
 }
 
 p{
@@ -74,4 +75,30 @@ p{
   background: #FF7800;
   color: antiquewhite;
   box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.68);
+}
+.completed-item{
+  text-decoration: line-through;
+    color: darkgray;
+}
+.todo-ul{
+  padding-bottom: 20px;
+}
+.todo-text{
+  width:90%;
+  word-break: break-word;
+}
+
+@media (min-width: 992px) {
+  .wrapper{
+    max-width: 50%;
+  }
+
+}
+
+@media (min-width: 576px) {
+  .btnWithoutStyle.active{
+    border-bottom: transparent;
+    border-top-left-radius: 5%;
+    border-top-right-radius: 5%;
+  }
 }

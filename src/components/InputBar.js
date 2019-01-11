@@ -31,18 +31,22 @@ class InputBar extends React.Component {
       return;
     }
 
-    const addTodo = this.props.addTodo;
+    const addTodo = this.props.submit;
     addTodo(this.state.todoText);
+    if (!this.props.isSearch)
+      this.setState({ todoText: '' });
 
-    this.setState({ todoText: '' });
-    this.editShowed = false;
   }
 
   handleChange(event) {
     this.setState({
       todoText: event.target.value
     });
-    this.props.resetEdit();
+    if (this.props.edit != null)
+      this.props.resetEdit();
+    if (this.props.isSearch) {
+      this.props.submit(event.target.value);
+    }
   }
 
   render() {
@@ -64,10 +68,15 @@ class InputBar extends React.Component {
           type='text' value={text}
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
-          placeholder='Enter todo here'
+          placeholder={this.props.placeholderText}
         />
         <div className="input-group-append">
-          <button className='btn btn-primary' onClick={this.handleSubmit}>{this.props.btnText}</button>
+          <button
+            className='btn btn-primary'
+            onClick={this.handleSubmit}
+          >
+            {this.props.btnText}
+          </button>
         </div>
       </div>
     );
