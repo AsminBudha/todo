@@ -46,7 +46,7 @@ class TodoItem extends React.Component {
         <span className="badge badge-primary badge-pill action-btns col-sm-4">
           <button
             className='btn btn-primary'
-            onClick={(event) => editTodoItem(item.index)}
+            onClick={(event) => { console.log(item); editTodoItem(item.index); }}
           >
             Edit
           </button>

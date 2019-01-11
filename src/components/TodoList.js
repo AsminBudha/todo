@@ -13,7 +13,10 @@ const TodoList = (props) => {
     changeCompletion,
   } = props;
   const pat = new RegExp(search);
-  const todoItems = todos.map((item) => {
+  const todoItems = todos.map((item, index) => {
+    const itemCopy = { ...item };
+    itemCopy.index = index;
+
     if (filter === COMPLETED && !item.isCompleted) {
       return '';
     }
@@ -29,7 +32,7 @@ const TodoList = (props) => {
       <li key={item.id.toString()} className='list-group-item'>
         {
           <TodoItem
-            item={item}
+            item={itemCopy}
             editTodoItem={editTodoItem}
             deleteTodoItem={deleteTodoItem}
             changeCompletion={changeCompletion}

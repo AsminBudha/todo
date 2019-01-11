@@ -9,15 +9,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    //if data is already in local storage use it
-    const storageData = window.localStorage.getItem('todoData');
-    const todos = storageData ? JSON.parse(storageData) : [];
-
-    //stores track of last given id for todo item
-    this.idGenerate = parseInt(window.localStorage.getItem('idGenerator')) || 0;
-
     this.state = {
-      todos: todos,
+      todos: [],
       tab: -1,
       edit: null,
       editIndex: null,
@@ -33,7 +26,7 @@ class App extends React.Component {
    * @returns {undefined}
    */
   addTodo = (todo) => {
-    const todos = this.state.todos.slice();
+    let todos = this.state.todos.slice();
     const date = new Date().toLocaleString();
 
     //if todo is to be edited
@@ -43,12 +36,13 @@ class App extends React.Component {
     }
     else {//else todo is to be added
       this.idGenerate++;
-      todos.unshift({
+      const obj = {
         id: this.idGenerate,
         title: todo,
         isCompleted: false,
         createdAt: date
-      });
+      };
+      todos = [obj, ...todos];
     }
 
     this.setState({
@@ -127,6 +121,7 @@ class App extends React.Component {
    * @returns {undefined}
    */
   editTodoItem = (index) => {
+    console.log(index);
     this.setState({
       edit: this.state.todos[index],
       editIndex: index
@@ -143,11 +138,26 @@ class App extends React.Component {
     this.setState({ edit: null });
   }
 
-  render() {
-    window.localStorage.clear();
-    window.localStorage.setItem('idGenerator', this.idGenerate.toString());
-    window.localStorage.setItem('todoData', JSON.stringify(this.state.todos));
+  componentDidMount() {
+    //if data is already in local storage use it
+    const storageData = window.localStorage.getItem('todoData');
+    const todos = storageData ? JSON.parse(storageData) : [];
+    this.setState({
+      todos
+    })
 
+    //stores track of last given id for todo item
+    this.idGenerate = parseInt(window.localStorage.getItem('idGenerator')) || 0;
+
+    //store data when tab is closing
+    window.addEventListener('beforeunload', (e) => {
+      window.localStorage.clear();
+      window.localStorage.setItem('idGenerator', this.idGenerate.toString());
+      window.localStorage.setItem('todoData', JSON.stringify(this.state.todos));
+    })
+  }
+
+  render() {
     const { todos } = this.state;
     const editToogle = this.startEdit;
 
