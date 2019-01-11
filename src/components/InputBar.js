@@ -30,7 +30,7 @@ class InputBar extends React.Component {
     event.preventDefault();
 
     //if input text is blank do not add
-    if (this.state.todoText === '') {
+    if (!this.state.todoText) {
       return;
     }
 

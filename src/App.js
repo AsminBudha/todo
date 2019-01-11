@@ -1,9 +1,10 @@
 import React from 'react';
 
-import './assets/css/';
 import Tabs from './components/Tabs';
 import InputBar from './components/InputBar';
 import TodoList from './components/TodoList';
+
+import './assets/css/';
 
 class App extends React.Component {
   constructor(props) {
@@ -97,10 +98,10 @@ class App extends React.Component {
     if (this.state.editIndex === index) {
       this.resetEdit();
     }
-
+    const REMOVE_SINGLE_ELEMENT = 1;
     const todos = this.state.todos.slice();
 
-    todos.splice(index, 1);
+    todos.splice(index, REMOVE_SINGLE_ELEMENT);
     this.setState({ todos: todos });
   }
 
