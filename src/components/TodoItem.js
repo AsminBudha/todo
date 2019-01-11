@@ -30,21 +30,10 @@ class TodoItem extends React.Component {
 
     return (
       <>
-        <div className='container-content-v-center left'>
-          <input className='left' type='radio' checked={isComplete} onChange={this.handleChecked} />
-          <div className='left'>
-            <p>{text}</p>
-            <small className='text-muted'>Created At: {item.createdAt}</small>
-
-          </div>
-
-        </div>
-
-        <span className="badge badge-primary badge-pill action-btns">
-          <button className='btn btn-primary' onClick={(event) => this.props.editTodoItem(item.index)}>Edit</button>
-          <button className='btn btn-primary' onClick={(event) => this.props.deleteTodoItem(item.index)}>Delete</button>
-        </span>
-
+        {text} Created At: {item.createdAt}
+        <input type='radio' checked={isComplete} onChange={this.handleChecked} />
+        <button onClick={(event) => this.props.deleteTodoItem(item.index)}>Delete</button>
+        <button onClick={(event) => this.props.editTodoItem(item.index)}>Edit</button>
 
       </>
     );
