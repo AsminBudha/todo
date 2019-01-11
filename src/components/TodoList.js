@@ -19,7 +19,7 @@ class TodoList extends React.Component {
       else if (filter === REMAINING && item.isCompleted) {
         return '';
       }
-      return (<li key={index.toString()}>
+      return (<li key={index.toString()} className='list-group-item'>
 
         {<TodoItem
           item={item}
@@ -31,7 +31,7 @@ class TodoList extends React.Component {
     });
 
     return (
-      <ul>
+      <ul className='list-group'>
         {todoItems}
       </ul>
     );

@@ -5,10 +5,6 @@ class Tabs extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      tab: -1
-    };
-
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -26,12 +22,13 @@ class Tabs extends React.Component {
   }
 
   render() {
-
+    const tab = this.props.tab;
+    // console.log(tab);
     return (
-      <div>
-        <button value='home' onClick={this.handleClick}>Home</button>
-        <button value='completed' onClick={this.handleClick}>Completed</button>
-        <button value='remaining' onClick={this.handleClick}>Remaining</button>
+      <div className='row tabs'>
+        <button className={'col-sm btnWithoutStyle ' + (tab === -1 && 'active')} value='home' onClick={this.handleClick}>Home</button>
+        <button className={'col-sm btnWithoutStyle ' + (tab === COMPLETED && 'active')} value='completed' onClick={this.handleClick}>Completed</button>
+        <button className={'col-sm btnWithoutStyle ' + (tab === REMAINING && 'active')} value='remaining' onClick={this.handleClick}>Remaining</button>
       </div>
     );
   }
