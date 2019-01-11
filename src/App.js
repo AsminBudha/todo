@@ -2,11 +2,14 @@ import React from 'react';
 import InputBar from './components/InputBar';
 import TodoBox from './components/TodoBox';
 import Tabs from './components/Tabs';
+import './assets/css/';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    const todos = [];
+
+    const storageData = window.localStorage.getItem('todoData');
+    const todos = storageData ? JSON.parse(storageData) : [];
 
     this.state = {
       todos: todos,
@@ -15,10 +18,10 @@ class App extends React.Component {
       editIndex: null
     };
 
+    this.startEdit = false;
   }
 
   addTodo = (todo) => {
-    console.log(todo, this.state.editIndex);
     const todos = this.state.todos.slice();
 
     const date = new Date().toLocaleString();
@@ -34,7 +37,6 @@ class App extends React.Component {
         isCompleted: false,
         createdAt: date
       });
-
     }
 
     this.setState({
@@ -67,11 +69,19 @@ class App extends React.Component {
   }
 
   deleteTodoItem = (index) => {
+
+    /**
+     * Reset the edit if current editing item is deleted
+     */
+    if (this.state.editIndex == index) {
+      this.resetEdit();
+    }
     const todos = this.state.todos.slice();
 
     todos.splice(index, 1);
 
     this.setState({ todos: todos });
+
   }
 
   editTodoItem = (index) => {
@@ -80,22 +90,47 @@ class App extends React.Component {
       edit: this.state.todos[index],
       editIndex: index
     })
+
+    this.startEdit = true;
+  }
+
+  editAlreadyUsed = () => {
+    this.setState({ edit: null });
   }
 
   render() {
-    const todos = this.state.todos;
-    return (
-      <div>
-        <Tabs changeTab={this.changeTab} />
-        <InputBar addTodo={this.addTodo} edit={this.state.edit} resetEdit={this.resetEdit} />
 
-        <TodoBox
-          todos={todos}
-          changeCompletion={this.changeCompletion}
-          filter={this.state.tab}
-          deleteTodoItem={this.deleteTodoItem}
-          editTodoItem={this.editTodoItem}
-        />
+    window.localStorage.clear();
+    window.localStorage.setItem('todoData', JSON.stringify(this.state.todos));
+
+    const todos = this.state.todos;
+
+    let className = 'container-fluid wrapper';
+
+    let editToogle = this.startEdit;
+    this.startEdit = false;
+    return (
+      <div className={className}>
+        <h1 className='app-name'>Todo App</h1>
+        <div className='myContainer'>
+          <Tabs changeTab={this.changeTab} tab={this.state.tab} />
+          <InputBar
+            addTodo={this.addTodo}
+            edit={this.state.edit}
+            resetEdit={this.editAlreadyUsed}
+            startEdit={editToogle}
+            btnText={this.state.editIndex != null ? 'Edit' : 'Add'}
+          />
+
+          <TodoBox
+            todos={todos}
+            changeCompletion={this.changeCompletion}
+            filter={this.state.tab}
+            deleteTodoItem={this.deleteTodoItem}
+            editTodoItem={this.editTodoItem}
+          />
+        </div>
+
       </div>
     );
   }

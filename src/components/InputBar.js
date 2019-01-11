@@ -30,7 +30,7 @@ class InputBar extends React.Component {
     if (this.state.todoText === '') {
       return;
     }
-    console.log('From Submit', this.props.edit)
+
     const addTodo = this.props.addTodo;
     addTodo(this.state.todoText);
 
@@ -42,35 +42,33 @@ class InputBar extends React.Component {
     this.setState({
       todoText: event.target.value
     });
-
+    this.props.resetEdit();
   }
-
-  editStored = () => {
-    // this.setState({
-    //   todoText: this.props.edit.title
-    // })
-
-    // this.props.resetEdit();
-    // console.log('Edit', this.counter);
-  }
-
 
   render() {
 
     let text = this.state.todoText;
-    // console.log('Checking', this.props.edit);
-    if (this.props.edit && !this.editShowed) {
-      // this.editStored();
+
+    if (this.props.edit) {
+
       text = this.props.edit.title;
-      // this.props.resetEdit();
-      this.editShowed = true;
+      // this.editShowed = true;
     }
 
     this.counter++;
+
     return (
-      <div>
-        <input type='text' value={text} onChange={this.handleChange} onKeyDown={this.handleKeyDown} />
-        <button onClick={this.handleSubmit}>Add</button>
+      <div className='inputBar input-group mb-3'>
+        <input
+          className="form-control"
+          type='text' value={text}
+          onChange={this.handleChange}
+          onKeyDown={this.handleKeyDown}
+          placeholder='Enter todo here'
+        />
+        <div className="input-group-append">
+          <button className='btn btn-primary' onClick={this.handleSubmit}>{this.props.btnText}</button>
+        </div>
       </div>
     );
   }
