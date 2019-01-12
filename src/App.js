@@ -37,7 +37,8 @@ class App extends React.Component {
       todos[editIndex].title = todo;
       todos[editIndex].createdAt = currentDate;
     }
-    else {//else todo is to be added
+    else {
+      //else todo is to be added
       this.idGenerate++;
       const obj = {
         id: this.idGenerate,
@@ -158,7 +159,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { todos, editIndex,tab,search,edit } = this.state;
+    const { todos, editIndex, tab, search, edit } = this.state;
     const editToogle = this.startEdit;
     const btnText = editIndex != null ? 'Save' : 'Add';
 
@@ -172,7 +173,7 @@ class App extends React.Component {
           isSearch={true}
           btnText={'Search'}
           submit={this.search}
-          placeholderText={'Search here'}
+          placeholderText='Search here'
         />
 
         <InputBar
@@ -180,7 +181,7 @@ class App extends React.Component {
           edit={edit}
           startEdit={editToogle}
           resetEdit={this.editAlreadyUsed}
-          placeholderText={'Enter Todo Here'}
+          placeholderText='Enter Todo Here'
           btnText={btnText}
         />
 

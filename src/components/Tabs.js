@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { REMAINING, COMPLETED, HOME } from '../utils/utils';
+import { REMAINING, COMPLETED, HOME } from '../constants/common';
 
 class Tabs extends React.Component {
   /**

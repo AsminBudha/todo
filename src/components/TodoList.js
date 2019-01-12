@@ -1,7 +1,7 @@
 import React from 'react';
 
 import TodoItem from './TodoItem';
-import { COMPLETED, REMAINING } from '../utils/utils';
+import { COMPLETED, REMAINING } from '../constants/common';
 
 const TodoList = (props) => {
   const {
