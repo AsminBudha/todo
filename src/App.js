@@ -5,6 +5,7 @@ import InputBar from './components/InputBar';
 import TodoList from './components/TodoList';
 
 import './assets/css/';
+import { setLocalStorageItem, getLocalStorageItem } from './utils/utils';
 
 class App extends React.Component {
   constructor(props) {
@@ -101,7 +102,7 @@ class App extends React.Component {
     const todos = this.state.todos.slice();
 
     todos.splice(index, REMOVE_SINGLE_ELEMENT);
-    this.setState({ todos: todos });
+    this.setState({ todos });
   }
 
   /**
@@ -140,18 +141,18 @@ class App extends React.Component {
     //if data is already in local storage use it
     const storageData = window.localStorage.getItem('todoData');
     const todos = storageData ? JSON.parse(storageData) : [];
+
     this.setState({
       todos
     })
 
     //stores track of last given id for todo item
-    this.idGenerate = parseInt(window.localStorage.getItem('idGenerator')) || 0;
+    this.idGenerate = parseInt(getLocalStorageItem('idGenerator')) || 0;
 
     //store data when tab is closing
     window.addEventListener('beforeunload', (e) => {
-      window.localStorage.clear();
-      window.localStorage.setItem('idGenerator', this.idGenerate.toString());
-      window.localStorage.setItem('todoData', JSON.stringify(this.state.todos));
+      setLocalStorageItem('idGenerator', this.idGenerate.toString());
+      setLocalStorageItem('todoData', JSON.stringify(this.state.todos));
     })
   }
 
