@@ -22,18 +22,18 @@ class App extends React.Component {
   }
 
   /**
-   * add or edit todo item
+   * Add or edit todo item
+   *
    * @param {string} todo
-   * @returns {undefined}
    */
   addTodo = (todo) => {
     let todos = this.state.todos.slice();
-    const date = new Date().toLocaleString();
+    const currentDate = new Date().toISOString();
 
     //if todo is to be edited
     if (this.state.editIndex != null) {
       todos[this.state.editIndex].title = todo;
-      todos[this.state.editIndex].createdAt = date;
+      todos[this.state.editIndex].createdAt = currentDate;
     }
     else {//else todo is to be added
       this.idGenerate++;
@@ -41,7 +41,7 @@ class App extends React.Component {
         id: this.idGenerate,
         title: todo,
         isCompleted: false,
-        createdAt: date
+        createdAt: currentDate
       };
       todos = [obj, ...todos];
     }
@@ -56,7 +56,6 @@ class App extends React.Component {
 
   /**
    * Sets edit and editIndex to null so that it doesnot change state to edition
-   * @returns {undefined}
    */
   resetEdit = () => {
     this.setState({
@@ -67,31 +66,31 @@ class App extends React.Component {
 
   /**
    * Change todo item with index to completed or incompleted.
+   *
    * @param {int} index
    * @param {bool} isCompleted
-   * @returns {undefined}
    */
   changeCompletion = (index, isCompleted) => {
     const todos = this.state.todos.slice();
 
     todos[index].isCompleted = isCompleted;
-    this.setState({ todos: todos });
+    this.setState({ todos });
   }
 
   /**
    * Change current tab being selected
    * tab is based upon contants in utils file
-   * @param {int} tab changed indicator ofr current tab
-   * @returns {undefined}
+   *
+   * @param {int} tab changed indicator of current tab
    */
   changeTab = (tab) => {
     this.setState({ tab });
   }
 
   /**
-   * delete todo item with index index in state:todos
+   * Delete todo item with index index in state:todos
+   *
    * @param {int} index index of item to be deleted
-   * @returns {undefined}
    */
   deleteTodoItem = (index) => {
     //Reset the edit if current editing item is deleted
@@ -106,9 +105,9 @@ class App extends React.Component {
   }
 
   /**
-   * set state with pattern which can be use to filter the todo list
+   * Set state with pattern which can be use to filter the todo list
+   *
    * @param {string} pattern string to be used to filter todo list
-   * @returns {undefined}
    */
   search = (pattern) => {
     this.setState({
@@ -117,12 +116,11 @@ class App extends React.Component {
   }
 
   /**
-   * store index and object in state which is going to be edited
+   * Store index and object in state which is going to be edited
+   *
    * @param {int} index index of todo item to be  edited
-   * @returns {undefined}
    */
   editTodoItem = (index) => {
-    console.log(index);
     this.setState({
       edit: this.state.todos[index],
       editIndex: index
@@ -132,8 +130,7 @@ class App extends React.Component {
   }
 
   /**
-   * set edit object which being edited to null so that value can be changed in input field
-   * @returns {undefined}
+   * Set edit object which being edited to null so that value can be changed in input field
    */
   editAlreadyUsed = () => {
     this.setState({ edit: null });
@@ -159,42 +156,41 @@ class App extends React.Component {
   }
 
   render() {
-    const { todos } = this.state;
+    const { todos, editIndex } = this.state;
     const editToogle = this.startEdit;
+    const btnText = editIndex != null ? 'Save' : 'Add';
 
     this.startEdit = false;
 
     return (
-      <>
-        <div className='myContainer'>
-          <Tabs changeTab={this.changeTab} tab={this.state.tab} />
+      <div className='myContainer'>
+        <Tabs changeTab={this.changeTab} tab={this.state.tab} />
 
-          <InputBar
-            isSearch={true}
-            btnText={'Search'}
-            submit={this.search}
-            placeholderText={'Search here'}
-          />
+        <InputBar
+          isSearch={true}
+          btnText={'Search'}
+          submit={this.search}
+          placeholderText={'Search here'}
+        />
 
-          <InputBar
-            submit={this.addTodo}
-            edit={this.state.edit}
-            startEdit={editToogle}
-            resetEdit={this.editAlreadyUsed}
-            placeholderText={'Enter Todo Here'}
-            btnText={this.state.editIndex != null ? 'Save' : 'Add'}
-          />
+        <InputBar
+          submit={this.addTodo}
+          edit={this.state.edit}
+          startEdit={editToogle}
+          resetEdit={this.editAlreadyUsed}
+          placeholderText={'Enter Todo Here'}
+          btnText={btnText}
+        />
 
-          <TodoList
-            todos={todos}
-            filter={this.state.tab}
-            search={this.state.search}
-            editTodoItem={this.editTodoItem}
-            deleteTodoItem={this.deleteTodoItem}
-            changeCompletion={this.changeCompletion}
-          />
-        </div>
-      </>
+        <TodoList
+          todos={todos}
+          filter={this.state.tab}
+          search={this.state.search}
+          editTodoItem={this.editTodoItem}
+          deleteTodoItem={this.deleteTodoItem}
+          changeCompletion={this.changeCompletion}
+        />
+      </div>
     );
   }
 }

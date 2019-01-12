@@ -10,9 +10,9 @@ class TodoItem extends React.Component {
   }
 
   /**
-   * handle when item completion radio is checked or unchecked
+   * Handle when item completion radio is checked or unchecked
+   *
    * @param {Object} event event triggered by radio
-   * @returns {undefined}
    */
   handleChecked = (event) => {
     const { changeCompletion, item } = this.props;
@@ -26,9 +26,10 @@ class TodoItem extends React.Component {
   }
 
   render() {
-    const { item, editTodoItem, deleteTodoItem } = this.props;
-    const text = item.title;
-    const isComplete = item.isCompleted ? 'checked' : '';
+    const { item: { index, title, isCompleted, createdAt }, editTodoItem, deleteTodoItem } = this.props;
+    const isComplete = isCompleted ? 'checked' : '';
+    const titleClass = isCompleted ? 'completed-item' : ''
+    const localeDate = new Date(createdAt).toLocaleString();
 
     return (
       <div className='row'>
@@ -38,21 +39,22 @@ class TodoItem extends React.Component {
             className='left'
             checked={isComplete}
             onChange={this.handleChecked} />
+
           <div className='left todo-text'>
-            <p className={item.isCompleted ? 'completed-item' : ''}>{text}</p>
-            <small className='text-muted'>Created At: {item.createdAt}</small>
+            <p className={titleClass}>{title}</p>
+            <small className='text-muted'>Created At: {localeDate}</small>
           </div>
         </div>
         <span className="badge badge-primary badge-pill action-btns col-sm-4">
           <button
             className='btn btn-primary'
-            onClick={(event) => { console.log(item); editTodoItem(item.index); }}
+            onClick={(event) => editTodoItem(index)}
           >
             Edit
           </button>
           <button
             className='btn btn-primary'
-            onClick={(event) => deleteTodoItem(item.index)}
+            onClick={(event) => deleteTodoItem(index)}
           >
             Delete
           </button>

@@ -1,21 +1,21 @@
 import React from 'react';
 
-import { REMAINING, COMPLETED } from '../constants/Utils';
+import { REMAINING, COMPLETED, HOME } from '../constants/Utils';
 
 class Tabs extends React.Component {
   /**
-   * handles tab change in menus
+   * Handles tab change in menus
+   *
    * @param {Object} event event triggered on click on tabs
-   * @returns {undefined}
    */
   handleClick = (event) => {
-    let tab = -1;
-    const val = event.target.value;
+    let tab = HOME;
+    const { value } = event.target;
 
-    if (val === 'completed') {
+    if (value === COMPLETED_TXT) {
       tab = COMPLETED;
     }
-    else if (val === 'remaining') {
+    else if (value === REMAINING_TXT) {
       tab = REMAINING;
     }
 
@@ -23,30 +23,43 @@ class Tabs extends React.Component {
   }
 
   render() {
-    const tab = this.props.tab;
+    const { tab } = this.props;
+
+    let homeClass = 'col-sm btnWithoutStyle ';
+    let completedClass = 'col-sm btnWithoutStyle ';
+    let remainingClass = 'col-sm btnWithoutStyle ';
+    if (tab === HOME) {
+      homeClass += 'active';
+    }
+    else if (tab === COMPLETED) {
+      completedClass += 'active';
+    }
+    else if (tab === REMAINING) {
+      remainingClass += 'active';
+    }
 
     return (
       <div className='row tabs'>
         <button
-          value='home'
+          value={HOME_TXT}
           onClick={this.handleClick}
-          className={'col-sm btnWithoutStyle ' + (tab === -1 && 'active')}
+          className={homeClass}
         >
-          Home
+          {HOME_TXT}
         </button>
         <button
-          value='completed'
+          value={COMPLETED_TXT}
           onClick={this.handleClick}
-          className={'col-sm btnWithoutStyle ' + (tab === COMPLETED && 'active')}
+          className={completedClass}
         >
-          Completed
+          {COMPLETED_TXT}
         </button>
         <button
-          value='remaining'
+          value={REMAINING_TXT}
           onClick={this.handleClick}
-          className={'col-sm btnWithoutStyle ' + (tab === REMAINING && 'active')}
+          className={remainingClass}
         >
-          Remaining
+          {REMAINING_TXT}
         </button>
       </div>
     );
@@ -54,3 +67,6 @@ class Tabs extends React.Component {
 }
 
 export default Tabs;
+export const HOME_TXT = 'Home'
+export const COMPLETED_TXT = 'Completed';
+export const REMAINING_TXT = 'Remaining';

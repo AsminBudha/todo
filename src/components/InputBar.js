@@ -11,9 +11,9 @@ class InputBar extends React.Component {
   }
 
   /**
-   * checks for key pressed enter in input field
+   * Checks for key pressed enter in input field
+   *
    * @param {Object} event event triggered by input field
-   * @returns {undefined}
    */
   handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -22,9 +22,9 @@ class InputBar extends React.Component {
   }
 
   /**
-   * handles the submission in enter text in input field
+   * Handles the submission in enter text in input field
+   *
    * @param {Object} event event triggered by form
-   * @returns {undefined}
    */
   handleSubmit = (event) => {
     event.preventDefault();
@@ -34,9 +34,9 @@ class InputBar extends React.Component {
       return;
     }
 
-    const addTodo = this.props.submit;
+    const { submit } = this.props;
 
-    addTodo(this.state.todoText);
+    submit(this.state.todoText);
 
     //input is cleared after submission but not cleared when we are searching
     if (!this.props.isSearch) {
@@ -45,16 +45,16 @@ class InputBar extends React.Component {
   }
 
   /**
-   *handle the change in input field
+   *Handle the change in input field
+   *
    * @param {Object} event event triggered by input field when something is changed
-   * @returns {undefined}
    */
   handleChange = (event) => {
     this.setState({
       todoText: event.target.value
     });
 
-    if (this.props.edit != null) {
+    if (this.props.edit) {
       this.props.resetEdit();
     }
 
@@ -65,7 +65,9 @@ class InputBar extends React.Component {
   }
 
   render() {
-    const text = this.props.edit ? this.props.edit.title : this.state.todoText;
+    const { todoText } = this.state;
+    const { btnText, edit } = this.props;
+    const text = edit ? edit.title : todoText;
 
     return (
       <div className='inputBar input-group mb-3'>
@@ -83,7 +85,7 @@ class InputBar extends React.Component {
             className='btn btn-primary'
             onClick={this.handleSubmit}
           >
-            {this.props.btnText}
+            {btnText}
           </button>
         </div>
       </div>
