@@ -16,11 +16,12 @@ class TodoItem extends React.Component {
    */
   handleChecked = (event) => {
     const { changeCompletion, item } = this.props;
+    const {checked}=this.state;
 
-    changeCompletion(item.index, this.state.checked);
+    changeCompletion(item.index, checked);
 
     this.setState({
-      checked: !this.state.checked
+      checked: !checked
     });
 
   }

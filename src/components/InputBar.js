@@ -29,17 +29,19 @@ class InputBar extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
 
+    const { todoText } = this.state;
+
     //if input text is blank do not add
-    if (!this.state.todoText) {
+    if (!todoText) {
       return;
     }
 
-    const { submit } = this.props;
+    const { submit, isSearch } = this.props;
 
-    submit(this.state.todoText);
+    submit(todoText);
 
     //input is cleared after submission but not cleared when we are searching
-    if (!this.props.isSearch) {
+    if (!isSearch) {
       this.setState({ todoText: '' });
     }
   }
@@ -54,19 +56,21 @@ class InputBar extends React.Component {
       todoText: event.target.value
     });
 
-    if (this.props.edit) {
-      this.props.resetEdit();
+    const { edit, resetEdit, isSearch, submit } = this.props;
+
+    if (edit) {
+      resetEdit();
     }
 
     //if searching instantly submit so that list is filtered
-    if (this.props.isSearch) {
-      this.props.submit(event.target.value);
+    if (isSearch) {
+      submit(event.target.value);
     }
   }
 
   render() {
     const { todoText } = this.state;
-    const { btnText, edit } = this.props;
+    const { btnText, edit, placeholderText } = this.props;
     const text = edit ? edit.title : todoText;
 
     return (
@@ -77,7 +81,7 @@ class InputBar extends React.Component {
           className="form-control"
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
-          placeholder={this.props.placeholderText}
+          placeholder={placeholderText}
         />
 
         <div className="input-group-append">

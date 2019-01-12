@@ -3,9 +3,9 @@ import React from 'react';
 import Tabs from './components/Tabs';
 import InputBar from './components/InputBar';
 import TodoList from './components/TodoList';
+import { setLocalStorageItem, getLocalStorageItem } from './utils/utils';
 
 import './assets/css/';
-import { setLocalStorageItem, getLocalStorageItem } from './utils/utils';
 
 class App extends React.Component {
   constructor(props) {
@@ -30,11 +30,12 @@ class App extends React.Component {
   addTodo = (todo) => {
     let todos = this.state.todos.slice();
     const currentDate = new Date().toISOString();
+    const { editIndex } = this.state;
 
     //if todo is to be edited
-    if (this.state.editIndex != null) {
-      todos[this.state.editIndex].title = todo;
-      todos[this.state.editIndex].createdAt = currentDate;
+    if (editIndex != null) {
+      todos[editIndex].title = todo;
+      todos[editIndex].createdAt = currentDate;
     }
     else {//else todo is to be added
       this.idGenerate++;
@@ -48,7 +49,7 @@ class App extends React.Component {
     }
 
     this.setState({
-      todos: todos
+      todos
     });
 
     //remove edit and editIndex since edit has been done
@@ -151,13 +152,13 @@ class App extends React.Component {
 
     //store data when tab is closing
     window.addEventListener('beforeunload', (e) => {
-      setLocalStorageItem('idGenerator', this.idGenerate.toString());
+      setLocalStorageItem('idGenerator', this.idGenerate);
       setLocalStorageItem('todoData', JSON.stringify(this.state.todos));
     })
   }
 
   render() {
-    const { todos, editIndex } = this.state;
+    const { todos, editIndex,tab,search,edit } = this.state;
     const editToogle = this.startEdit;
     const btnText = editIndex != null ? 'Save' : 'Add';
 
@@ -165,7 +166,7 @@ class App extends React.Component {
 
     return (
       <div className='myContainer'>
-        <Tabs changeTab={this.changeTab} tab={this.state.tab} />
+        <Tabs changeTab={this.changeTab} tab={tab} />
 
         <InputBar
           isSearch={true}
@@ -176,7 +177,7 @@ class App extends React.Component {
 
         <InputBar
           submit={this.addTodo}
-          edit={this.state.edit}
+          edit={edit}
           startEdit={editToogle}
           resetEdit={this.editAlreadyUsed}
           placeholderText={'Enter Todo Here'}
@@ -185,8 +186,8 @@ class App extends React.Component {
 
         <TodoList
           todos={todos}
-          filter={this.state.tab}
-          search={this.state.search}
+          filter={tab}
+          search={search}
           editTodoItem={this.editTodoItem}
           deleteTodoItem={this.deleteTodoItem}
           changeCompletion={this.changeCompletion}
