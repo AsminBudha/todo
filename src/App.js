@@ -67,18 +67,26 @@ class App extends React.Component {
    * @param {string} todo
    */
   editTodo = (todo) => {
-    const todos = this.state.todos.map((item) => ({ ...item }));
     const currentDate = new Date().toISOString();
-    const { editIndex } = this.state;
+    const { editIndex, todos } = this.state;
 
     const obj = { ...todos[editIndex], title: todo, createdAt: currentDate };
 
     http.edit(todos[editIndex].id, obj).then(() => {
-      todos[editIndex].title = todo;
-      todos[editIndex].createdAt = currentDate;
+      const newTodo = todos.map((item, index) => {
+        if (index !== editIndex) {
+          return item;
+        }
+
+        return {
+          ...item,
+          title: todo,
+          createdAt: currentDate
+        };
+      });
 
       this.setState({
-        todos: [...todos],
+        todos: newTodo,
         editIndex: null
       });
     });
