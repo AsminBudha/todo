@@ -1,73 +1,129 @@
 import React from 'react';
 
+/**
+ * Component with Input Field and Button in horizontal.
+ *
+ * @class InputBar
+ * @extends {React.Component}
+ */
 class InputBar extends React.Component {
-
+  /**
+   *
+   * @param {*} props
+   * @memberof InputBar
+   */
   constructor(props) {
     super(props);
 
-    let text = '';
-
     this.state = {
-      todoText: text
+      todoText: ''
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
 
-    this.editShowed = false;
+    this.isOnEdit = false;
+    this.currentEditingId = null;
   }
 
-  handleKeyDown(event) {
+  /**
+   * Checks for key pressed enter in input field.
+   *
+   * @param {Object} event Event triggered by input field.
+   * @memberof InputBar
+   */
+  handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       this.handleSubmit(event);
-      return;
     }
-
   }
-  handleSubmit(event) {
+
+  /**
+   * Submission handler for input field.
+   *
+   * @param {Object} event Event triggered by form.
+   * @memberof InputBar
+   */
+  handleSubmit = (event) => {
     event.preventDefault();
 
-    if (this.state.todoText === '') {
+    const { todoText } = this.state;
+
+    // if input text is blank do not add
+    if (!todoText) {
       return;
     }
 
-    const addTodo = this.props.addTodo;
-    addTodo(this.state.todoText);
+    const { submit, isSearch, editTodo } = this.props;
 
-    this.setState({ todoText: '' });
-    this.editShowed = false;
+    if (this.isOnEdit) {
+      editTodo(todoText);
+      this.isOnEdit = false;
+      this.currentEditingId = null;
+    } else {
+      submit(todoText);
+    }
+
+    // input is cleared after submission but not cleared when we are searching
+    if (!isSearch) {
+      this.setState({ todoText: '' });
+    }
   }
 
-  handleChange(event) {
+  /**
+   * Handle the change in input field.
+   *
+   * @param {Object} event Event triggered by input field when something is changed.
+   */
+  handleChange = (event) => {
     this.setState({
       todoText: event.target.value
     });
-    this.props.resetEdit();
-  }
 
-  render() {
+    const { isSearch, submit } = this.props;
 
-    let text = this.state.todoText;
-
-    if (this.props.edit) {
-
-      text = this.props.edit.title;
-      // this.editShowed = true;
+    // if searching instantly submit so that list is filtered
+    if (isSearch) {
+      submit(event.target.value);
     }
 
-    this.counter++;
+  }
+
+  /**
+   * This function is automatically called to render JSX of compoenent.
+   *
+   * @returns
+   * @memberof InputBar
+   */
+  render() {
+    const { todoText } = this.state;
+    const { btnText, placeholderText, editionObject } = this.props;
+    let text = todoText;
+
+    if (editionObject && this.currentEditingId !== editionObject.id) {
+      this.isOnEdit = true;
+      this.currentEditingId = editionObject.id;
+      text = editionObject.title;
+    } else if (!editionObject) {
+      this.isOnEdit = false;
+      this.currentEditingId = null;
+    }
 
     return (
       <div className='inputBar input-group mb-3'>
         <input
+          type='text'
+          value={text}
           className="form-control"
-          type='text' value={text}
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
-          placeholder='Enter todo here'
+          placeholder={placeholderText}
         />
+
         <div className="input-group-append">
-          <button className='btn btn-primary' onClick={this.handleSubmit}>{this.props.btnText}</button>
+          <button
+            className='btn btn-primary'
+            onClick={this.handleSubmit}
+          >
+            {btnText}
+          </button>
         </div>
       </div>
     );

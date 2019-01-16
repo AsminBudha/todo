@@ -1,34 +1,76 @@
 import React from 'react';
-import { REMAINING, COMPLETED } from '../constants/Utils';
 
+import Common from '../constants/common';
+
+/**
+ * Component which shows three tabs with equal width.
+ *
+ * @class Tabs
+ * @extends {React.Component}
+ */
 class Tabs extends React.Component {
-  constructor(props) {
-    super(props);
+  /**
+   * Handles tab change in menus.
+   *
+   * @param {Object} event Event triggered on click on tabs.
+   */
+  handleClick = (event) => {
+    let tab = Common.HOME;
+    const { value } = event.target;
 
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(event) {
-    const val = event.target.value;
-    let tab = -1;
-
-    if (val === 'completed') {
-      tab = COMPLETED;
+    if (value === Common.COMPLETED_TXT) {
+      tab = Common.COMPLETED;
+    } else if (value === Common.REMAINING_TXT) {
+      tab = Common.REMAINING;
     }
-    else if (val === 'remaining') {
-      tab = REMAINING;
-    }
+
     this.props.changeTab(tab);
   }
 
+  /**
+   * Render function is automaticall called which renders JSX component.
+   *
+   * @returns
+   * @memberof Tabs
+   */
   render() {
-    const tab = this.props.tab;
-    // console.log(tab);
+    const { tab } = this.props;
+
+    let homeClass = 'col-sm btnWithoutStyle ';
+    let completedClass = 'col-sm btnWithoutStyle ';
+    let remainingClass = 'col-sm btnWithoutStyle ';
+
+    if (tab === Common.HOME) {
+      homeClass += 'active';
+    } else if (tab === Common.COMPLETED) {
+      completedClass += 'active';
+    } else if (tab === Common.REMAINING) {
+      remainingClass += 'active';
+    }
+
     return (
       <div className='row tabs'>
-        <button className={'col-sm btnWithoutStyle ' + (tab === -1 && 'active')} value='home' onClick={this.handleClick}>Home</button>
-        <button className={'col-sm btnWithoutStyle ' + (tab === COMPLETED && 'active')} value='completed' onClick={this.handleClick}>Completed</button>
-        <button className={'col-sm btnWithoutStyle ' + (tab === REMAINING && 'active')} value='remaining' onClick={this.handleClick}>Remaining</button>
+        <button
+          value={Common.HOME_TXT}
+          onClick={this.handleClick}
+          className={homeClass}
+        >
+          {Common.HOME_TXT}
+        </button>
+        <button
+          value={Common.COMPLETED_TXT}
+          onClick={this.handleClick}
+          className={completedClass}
+        >
+          {Common.COMPLETED_TXT}
+        </button>
+        <button
+          value={Common.REMAINING_TXT}
+          onClick={this.handleClick}
+          className={remainingClass}
+        >
+          {Common.REMAINING_TXT}
+        </button>
       </div>
     );
   }

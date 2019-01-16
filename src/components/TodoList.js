@@ -1,41 +1,55 @@
 import React from 'react';
+
 import TodoItem from './TodoItem';
-import { COMPLETED, REMAINING } from '../constants/Utils';
+import Common from '../constants/common';
 
+/**
+ * Renders list items.
+ *
+ * @param {Object} props
+ */
+const TodoList = (props) => {
 
-class TodoList extends React.Component {
+  const {
+    todos,
+    filter,
+    startEdit,
+    deleteTodoItem,
+    handleTodoChecked,
+  } = props;
 
-  render() {
-    const todos = this.props.todos;
-    const changeCompletion = this.props.changeCompletion;
+  const todoItems = todos.map((item, index) => {
+    const itemCopy = { ...item };
 
-    const filter = this.props.filter;
+    itemCopy.index = index;
 
-    const todoItems = todos.map((item, index) => {
-      item.index = index;
-      if (filter === COMPLETED && !item.isCompleted) {
-        return '';
-      }
-      else if (filter === REMAINING && item.isCompleted) {
-        return '';
-      }
-      return (<li key={index.toString()} className='list-group-item'>
+    if (filter === Common.COMPLETED && !item.isCompleted) {
+      return '';
+    }
 
-        {<TodoItem
-          item={item}
-          changeCompletion={changeCompletion}
-          deleteTodoItem={this.props.deleteTodoItem}
-          editTodoItem={this.props.editTodoItem}
-        />}
-      </li>);
-    });
+    if (filter === Common.REMAINING && item.isCompleted) {
+      return '';
+    }
 
     return (
-      <ul className='list-group'>
-        {todoItems}
-      </ul>
+      <li key={item.id} className='list-group-item'>
+        {
+          <TodoItem
+            item={itemCopy}
+            startEdit={startEdit}
+            deleteTodoItem={deleteTodoItem}
+            handleTodoChecked={handleTodoChecked}
+          />
+        }
+      </li>
     );
-  }
-}
+  });
+
+  return (
+    <ul className='list-group todo-ul'>
+      {todoItems}
+    </ul>
+  );
+};
 
 export default TodoList;
