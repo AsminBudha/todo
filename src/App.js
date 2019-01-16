@@ -6,7 +6,8 @@ import InputBar from './components/InputBar';
 import TodoList from './components/TodoList';
 
 import './assets/css/';
-import { get, post, remove, edit, search as SearchFromServer } from './services/http';
+import http from './services/http';
+import Common from './constants/common';
 
 /**
  *Main class which handles overall app functionality and rendering
@@ -27,8 +28,7 @@ class App extends React.Component {
 
     this.state = {
       todos: [],
-      tab: -1,
-      edit: null,
+      tab: Common.HOME,
       editIndex: null,
       search: null,
     };
@@ -51,7 +51,7 @@ class App extends React.Component {
       isCompleted: false,
       createdAt: currentDate
     };
-    const todoData = post(obj);
+    const todoData = http.post(obj);
 
     todoData.then(() => {
       todos = [obj, ...todos];
@@ -73,7 +73,7 @@ class App extends React.Component {
 
     const obj = { ...todos[editIndex], title: todo, createdAt: currentDate };
 
-    edit(todos[editIndex].id, obj).then(() => {
+    http.edit(todos[editIndex].id, obj).then(() => {
       todos[editIndex].title = todo;
       todos[editIndex].createdAt = currentDate;
 
@@ -121,7 +121,7 @@ class App extends React.Component {
     const REMOVE_SINGLE_ELEMENT = 1;
     const todos = this.state.todos.map((item) => ({ ...item }));
 
-    remove(todos[index].id).then(() => {
+    http.remove(todos[index].id).then(() => {
       todos.splice(index, REMOVE_SINGLE_ELEMENT);
       this.setState({ todos });
     });
@@ -132,13 +132,16 @@ class App extends React.Component {
    *
    * @param {string} pattern String to be used to filter todo list.
    */
-  search = async (pattern) => {
+  search = (pattern) => {
     if (pattern) {
-      const searchedQuery = await SearchFromServer(pattern).data;
+      const searchedQuery = http.search(pattern);
 
-      this.setState({
-        search: searchedQuery
-      });
+      searchedQuery
+        .then((response) => {
+          this.setState({
+            search: response.data
+          });
+        });
     } else {
       this.setState({
         search: null
@@ -158,18 +161,11 @@ class App extends React.Component {
   }
 
   /**
-   * Set edit object which being edited to null so that value can be changed in input field.
-   */
-  editAlreadyUsed = () => {
-    this.setState({ edit: null });
-  }
-
-  /**
    *
    * @memberof App
    */
   componentDidMount() {
-    const todoData = get();
+    const todoData = http.get();
 
     // Retrieve data from server after component is mounted and set into state
     todoData.then((response) => {

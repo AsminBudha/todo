@@ -12,7 +12,7 @@ const instance = axios.create({
  *
  * @returns {Object<Promise>} Returns promise either resolved or rejected.
  */
-export async function get() {
+async function get() {
   try {
     const data = await instance.get('');
 
@@ -29,7 +29,7 @@ export async function get() {
  *
  * @returns {Object<Promise>} Returns promise either resolved or rejected.
  */
-export async function post(obj) {
+async function post(obj) {
   try {
     const data = await instance.post('', obj);
 
@@ -46,7 +46,7 @@ export async function post(obj) {
  *
  * @returns {Object<Promise>} Returns promise either resolved or rejected.
  */
-export async function remove(id) {
+async function remove(id) {
   try {
     const data = await instance.delete(`/${id}`);
 
@@ -64,7 +64,7 @@ export async function remove(id) {
  *
  * @returns {Object<Promise>} Returns promise either resolved or rejected.
  */
-export async function edit(id, obj) {
+async function edit(id, obj) {
   try {
     const data = await instance.put(`/${id}`, { ...obj });
 
@@ -81,7 +81,7 @@ export async function edit(id, obj) {
  *
  * @returns {Object<Promise>} Returns promise either resolved or rejected.
  */
-export async function search(searchQuery) {
+async function search(searchQuery) {
   try {
     const data = await instance.get(`?q=${searchQuery}`);
 
@@ -90,3 +90,11 @@ export async function search(searchQuery) {
     return Promise.reject(err);
   }
 }
+
+export default {
+  get,
+  edit,
+  post,
+  remove,
+  search
+};
