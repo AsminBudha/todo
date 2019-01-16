@@ -1,13 +1,27 @@
 import React from 'react';
+import { Spring } from 'react-spring';
 
 import Tabs from './components/Tabs';
 import InputBar from './components/InputBar';
 import TodoList from './components/TodoList';
-import { setLocalStorageItem, getLocalStorageItem } from './utils/utils';
 
 import './assets/css/';
+import { get, post, remove, edit, search as SearchFromServer } from './services/http';
 
+/**
+ *Main class which handles overall app functionality and rendering
+ *
+ * @class App
+ * @extends {React.Component}
+ */
 class App extends React.Component {
+
+  /**
+   *
+   *
+   * @param {Object} props Object passed when intance is created.
+   * @memberof App
+   */
   constructor(props) {
     super(props);
 
@@ -16,54 +30,57 @@ class App extends React.Component {
       tab: -1,
       edit: null,
       editIndex: null,
-      search: '',
+      search: null,
     };
 
-    this.startEdit = false;
   }
 
   /**
-   * Add or edit todo item
+   * Add todo item.
    *
    * @param {string} todo
    */
   addTodo = (todo) => {
-    let todos = this.state.todos.slice();
+    let todos = this.state.todos.map((item) => ({ ...item }));
     const currentDate = new Date().toISOString();
-    const { editIndex } = this.state;
 
-    //if todo is to be edited
-    if (editIndex != null) {
-      todos[editIndex].title = todo;
-      todos[editIndex].createdAt = currentDate;
-    }
-    else {
-      //else todo is to be added
-      this.idGenerate++;
-      const obj = {
-        id: this.idGenerate,
-        title: todo,
-        isCompleted: false,
-        createdAt: currentDate
-      };
+    this.idGenerate++;
+    const obj = {
+      id: this.idGenerate,
+      title: todo,
+      isCompleted: false,
+      createdAt: currentDate
+    };
+    const todoData = post(obj);
+
+    todoData.then(() => {
       todos = [obj, ...todos];
-    }
-
-    this.setState({
-      todos
+      this.setState({
+        todos
+      });
     });
-
-    //remove edit and editIndex since edit has been done
-    this.resetEdit();
   }
 
   /**
-   * Sets edit and editIndex to null so that it doesnot change state to edition
+   * Edit todo item.
+   *
+   * @param {string} todo
    */
-  resetEdit = () => {
-    this.setState({
-      edit: null,
-      editIndex: null
+  editTodo = (todo) => {
+    const todos = this.state.todos.map((item) => ({ ...item }));
+    const currentDate = new Date().toISOString();
+    const { editIndex } = this.state;
+
+    const obj = { ...todos[editIndex], title: todo, createdAt: currentDate };
+
+    edit(todos[editIndex].id, obj).then(() => {
+      todos[editIndex].title = todo;
+      todos[editIndex].createdAt = currentDate;
+
+      this.setState({
+        todos: [...todos],
+        editIndex: null
+      });
     });
   }
 
@@ -73,137 +90,162 @@ class App extends React.Component {
    * @param {int} index
    * @param {bool} isCompleted
    */
-  changeCompletion = (index, isCompleted) => {
-    const todos = this.state.todos.slice();
+  handleTodoChecked = (index, isCompleted) => {
+    const todos = this.state.todos.map((item) => ({ ...item }));
 
     todos[index].isCompleted = isCompleted;
     this.setState({ todos });
   }
 
   /**
-   * Change current tab being selected
-   * tab is based upon contants in utils file
+   * Change current tab being selected.
+   * Tab is based upon contants in utils file.
    *
-   * @param {int} tab changed indicator of current tab
+   * @param {int} tab Changed indicator of current tab.
    */
   changeTab = (tab) => {
     this.setState({ tab });
   }
 
   /**
-   * Delete todo item with index index in state:todos
+   * Delete todo item with index index in state:todos.
    *
-   * @param {int} index index of item to be deleted
+   * @param {int} index Index of item to be deleted.
    */
   deleteTodoItem = (index) => {
-    //Reset the edit if current editing item is deleted
-    if (this.state.editIndex === index) {
-      this.resetEdit();
-    }
+    // Reset the edit if current editing item is deleted
+    this.setState({
+      editIndex: null
+    });
+
     const REMOVE_SINGLE_ELEMENT = 1;
-    const todos = this.state.todos.slice();
+    const todos = this.state.todos.map((item) => ({ ...item }));
 
-    todos.splice(index, REMOVE_SINGLE_ELEMENT);
-    this.setState({ todos });
+    remove(todos[index].id).then(() => {
+      todos.splice(index, REMOVE_SINGLE_ELEMENT);
+      this.setState({ todos });
+    });
   }
 
   /**
-   * Set state with pattern which can be use to filter the todo list
+   * Set state with pattern which can be use to filter the todo list.
    *
-   * @param {string} pattern string to be used to filter todo list
+   * @param {string} pattern String to be used to filter todo list.
    */
-  search = (pattern) => {
-    this.setState({
-      search: pattern
-    })
+  search = async (pattern) => {
+    if (pattern) {
+      const searchedQuery = await SearchFromServer(pattern).data;
+
+      this.setState({
+        search: searchedQuery
+      });
+    } else {
+      this.setState({
+        search: null
+      });
+    }
   }
 
   /**
-   * Store index and object in state which is going to be edited
+   * Store index and object in state which is going to be edited.
    *
-   * @param {int} index index of todo item to be  edited
+   * @param {int} index Index of todo item to be  edited.
    */
-  editTodoItem = (index) => {
+  startEdit = (index) => {
     this.setState({
-      edit: this.state.todos[index],
       editIndex: index
-    })
-
-    this.startEdit = true;
+    });
   }
 
   /**
-   * Set edit object which being edited to null so that value can be changed in input field
+   * Set edit object which being edited to null so that value can be changed in input field.
    */
   editAlreadyUsed = () => {
     this.setState({ edit: null });
   }
 
+  /**
+   *
+   * @memberof App
+   */
   componentDidMount() {
-    //if data is already in local storage use it
-    const storageData = window.localStorage.getItem('todoData');
-    const todos = storageData ? JSON.parse(storageData) : [];
+    const todoData = get();
 
-    this.setState({
-      todos
-    })
+    // Retrieve data from server after component is mounted and set into state
+    todoData.then((response) => {
+      const todos = response.data.reverse();
 
-    //stores track of last given id for todo item
-    this.idGenerate = parseInt(getLocalStorageItem('idGenerator')) || 0;
+      // stores track of last given id for todo item
+      this.idGenerate = todos[0] ? todos[0].id : 0;
 
-    //store data when tab is closing
-    window.addEventListener('beforeunload', (e) => {
-      setLocalStorageItem('idGenerator', this.idGenerate);
-      setLocalStorageItem('todoData', JSON.stringify(this.state.todos));
-    })
+      this.setState({
+        todos
+      });
+    });
   }
 
+  /**
+   *
+   * @returns JSX to be rendered.
+   * @memberof App
+   */
   render() {
-    const { todos, editIndex, tab, search, edit } = this.state;
-    const editToogle = this.startEdit;
-    const btnText = editIndex != null ? 'Save' : 'Add';
+    const { todos, editIndex, tab, search } = this.state;
+    const btnText = editIndex !== null ? 'Save' : 'Add';
+    const todoData = search || todos;
 
-    this.startEdit = false;
+    const editionObject = editIndex !== null ? { ...todos[editIndex] } : null;
 
     return (
-      <div className='myContainer'>
-        <Tabs changeTab={this.changeTab} tab={tab} />
+      <Spring
+        from={{ opacity: 0 }}
+        to={{ opacity: 1 }}
+        config={{ duration: 1000 }}
+      >
+        {props => (
+          <div style={props} className='myContainer'>
+            <Tabs changeTab={this.changeTab} tab={tab} />
 
-        <InputBar
-          isSearch={true}
-          btnText={'Search'}
-          submit={this.search}
-          placeholderText='Search here'
-        />
+            <InputBar
+              isSearch={true}
+              btnText={'Search'}
+              submit={this.search}
+              placeholderText='Search here'
+            />
 
-        <InputBar
-          submit={this.addTodo}
-          edit={edit}
-          startEdit={editToogle}
-          resetEdit={this.editAlreadyUsed}
-          placeholderText='Enter Todo Here'
-          btnText={btnText}
-        />
+            <InputBar
+              submit={this.addTodo}
+              editTodo={this.editTodo}
+              editionObject={editionObject}
+              placeholderText='Enter Todo Here'
+              btnText={btnText}
+            />
 
-        <TodoList
-          todos={todos}
-          filter={tab}
-          search={search}
-          editTodoItem={this.editTodoItem}
-          deleteTodoItem={this.deleteTodoItem}
-          changeCompletion={this.changeCompletion}
-        />
-      </div>
+            <TodoList
+              todos={todoData}
+              filter={tab}
+              search={search}
+              startEdit={this.startEdit}
+              deleteTodoItem={this.deleteTodoItem}
+              handleTodoChecked={this.handleTodoChecked}
+            />
+          </div>
+        )}
+      </Spring >
     );
   }
 }
 
+/**
+ *
+ * @param {Object<React.Component>} Component
+ */
 const withAppTitle = (Component) =>
   (props) => (
     <div className={'container-fluid wrapper'}>
       <h1 className='app-name'>Todo App</h1>
       <Component {...props} />
     </div>
-  )
+  );
 
 export default withAppTitle(App);

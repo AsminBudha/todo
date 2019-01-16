@@ -1,19 +1,33 @@
 import React from 'react';
 
+/**
+ * Component with Input Field and Button in horizontal.
+ *
+ * @class InputBar
+ * @extends {React.Component}
+ */
 class InputBar extends React.Component {
-
+  /**
+   *
+   * @param {*} props
+   * @memberof InputBar
+   */
   constructor(props) {
     super(props);
 
     this.state = {
       todoText: ''
-    }
+    };
+
+    this.isOnEdit = false;
+    this.currentEditingId = null;
   }
 
   /**
-   * Checks for key pressed enter in input field
+   * Checks for key pressed enter in input field.
    *
-   * @param {Object} event event triggered by input field
+   * @param {Object} event Event triggered by input field.
+   * @memberof InputBar
    */
   handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -22,56 +36,75 @@ class InputBar extends React.Component {
   }
 
   /**
-   * Handles the submission in enter text in input field
+   * Submission handler for input field.
    *
-   * @param {Object} event event triggered by form
+   * @param {Object} event Event triggered by form.
+   * @memberof InputBar
    */
   handleSubmit = (event) => {
     event.preventDefault();
 
     const { todoText } = this.state;
 
-    //if input text is blank do not add
+    // if input text is blank do not add
     if (!todoText) {
       return;
     }
 
-    const { submit, isSearch } = this.props;
+    const { submit, isSearch, editTodo } = this.props;
 
-    submit(todoText);
+    if (this.isOnEdit) {
+      editTodo(todoText);
+      this.isOnEdit = false;
+      this.currentEditingId = null;
+    } else {
+      submit(todoText);
+    }
 
-    //input is cleared after submission but not cleared when we are searching
+    // input is cleared after submission but not cleared when we are searching
     if (!isSearch) {
       this.setState({ todoText: '' });
     }
   }
 
   /**
-   *Handle the change in input field
+   * Handle the change in input field.
    *
-   * @param {Object} event event triggered by input field when something is changed
+   * @param {Object} event Event triggered by input field when something is changed.
    */
   handleChange = (event) => {
     this.setState({
       todoText: event.target.value
     });
 
-    const { edit, resetEdit, isSearch, submit } = this.props;
+    const { isSearch, submit } = this.props;
 
-    if (edit) {
-      resetEdit();
-    }
-
-    //if searching instantly submit so that list is filtered
+    // if searching instantly submit so that list is filtered
     if (isSearch) {
       submit(event.target.value);
     }
+
   }
 
+  /**
+   * This function is automatically called to render JSX of compoenent.
+   *
+   * @returns
+   * @memberof InputBar
+   */
   render() {
     const { todoText } = this.state;
-    const { btnText, edit, placeholderText } = this.props;
-    const text = edit ? edit.title : todoText;
+    const { btnText, placeholderText, editionObject } = this.props;
+    let text = todoText;
+
+    if (editionObject && this.currentEditingId !== editionObject.id) {
+      this.isOnEdit = true;
+      this.currentEditingId = editionObject.id;
+      text = editionObject.title;
+    } else if (!editionObject) {
+      this.isOnEdit = false;
+      this.currentEditingId = null;
+    }
 
     return (
       <div className='inputBar input-group mb-3'>

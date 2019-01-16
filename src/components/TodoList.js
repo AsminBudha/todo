@@ -1,41 +1,44 @@
 import React from 'react';
 
 import TodoItem from './TodoItem';
-import { COMPLETED, REMAINING } from '../constants/common';
+import Common from '../constants/common';
 
+/**
+ * Renders list items.
+ *
+ * @param {Object} props
+ */
 const TodoList = (props) => {
+
   const {
     todos,
     filter,
-    search,
-    editTodoItem,
+    startEdit,
     deleteTodoItem,
-    changeCompletion,
+    handleTodoChecked,
   } = props;
-  const pattern = new RegExp(search);
+
   const todoItems = todos.map((item, index) => {
     const itemCopy = { ...item };
+
     itemCopy.index = index;
 
-    if (filter === COMPLETED && !item.isCompleted) {
+    if (filter === Common.COMPLETED && !item.isCompleted) {
       return '';
     }
 
-    if (filter === REMAINING && item.isCompleted) {
+    if (filter === Common.REMAINING && item.isCompleted) {
       return '';
     }
 
-    if (pattern && !pattern.test(item.title)) {
-      return '';
-    }
     return (
       <li key={item.id} className='list-group-item'>
         {
           <TodoItem
             item={itemCopy}
-            editTodoItem={editTodoItem}
+            startEdit={startEdit}
             deleteTodoItem={deleteTodoItem}
-            changeCompletion={changeCompletion}
+            handleTodoChecked={handleTodoChecked}
           />
         }
       </li>
@@ -47,6 +50,6 @@ const TodoList = (props) => {
       {todoItems}
     </ul>
   );
-}
+};
 
 export default TodoList;

@@ -1,6 +1,18 @@
 import React from 'react';
 
+/**
+ * Renders single item todo item.
+ *
+ * @class TodoItem
+ * @extends {React.Component}
+ */
 class TodoItem extends React.Component {
+  /**
+   * Creates an instance of TodoItem.
+   *
+   * @param {*} props
+   * @memberof TodoItem
+   */
   constructor(props) {
     super(props);
 
@@ -10,15 +22,14 @@ class TodoItem extends React.Component {
   }
 
   /**
-   * Handle when item completion radio is checked or unchecked
+   * Handle when item completion radio is checked or unchecked.
    *
-   * @param {Object} event event triggered by radio
    */
-  handleChecked = (event) => {
-    const { changeCompletion, item } = this.props;
-    const {checked}=this.state;
+  handleChecked = () => {
+    const { handleTodoChecked, item } = this.props;
+    const { checked } = this.state;
 
-    changeCompletion(item.index, checked);
+    handleTodoChecked(item.index, checked);
 
     this.setState({
       checked: !checked
@@ -26,10 +37,16 @@ class TodoItem extends React.Component {
 
   }
 
+  /**
+   * Render component to show list of items.
+   *
+   * @returns
+   * @memberof TodoItem
+   */
   render() {
-    const { item: { index, title, isCompleted, createdAt }, editTodoItem, deleteTodoItem } = this.props;
+    const { item: { index, title, isCompleted, createdAt }, startEdit, deleteTodoItem } = this.props;
     const isComplete = isCompleted ? 'checked' : '';
-    const titleClass = isCompleted ? 'completed-item' : ''
+    const titleClass = isCompleted ? 'completed-item' : '';
     const localeDate = new Date(createdAt).toLocaleString();
 
     return (
@@ -49,13 +66,13 @@ class TodoItem extends React.Component {
         <span className="badge badge-primary badge-pill action-btns col-sm-4">
           <button
             className='btn btn-primary'
-            onClick={(event) => editTodoItem(index)}
+            onClick={() => startEdit(index)}
           >
             Edit
           </button>
           <button
             className='btn btn-primary'
-            onClick={(event) => deleteTodoItem(index)}
+            onClick={() => deleteTodoItem(index)}
           >
             Delete
           </button>

@@ -1,65 +1,75 @@
 import React from 'react';
 
-import { REMAINING, COMPLETED, HOME } from '../constants/common';
+import Common from '../constants/common';
 
+/**
+ * Component which shows three tabs with equal width.
+ *
+ * @class Tabs
+ * @extends {React.Component}
+ */
 class Tabs extends React.Component {
   /**
-   * Handles tab change in menus
+   * Handles tab change in menus.
    *
-   * @param {Object} event event triggered on click on tabs
+   * @param {Object} event Event triggered on click on tabs.
    */
   handleClick = (event) => {
-    let tab = HOME;
+    let tab = Common.HOME;
     const { value } = event.target;
 
-    if (value === COMPLETED_TXT) {
-      tab = COMPLETED;
-    }
-    else if (value === REMAINING_TXT) {
-      tab = REMAINING;
+    if (value === Common.COMPLETED_TXT) {
+      tab = Common.COMPLETED;
+    } else if (value === Common.REMAINING_TXT) {
+      tab = Common.REMAINING;
     }
 
     this.props.changeTab(tab);
   }
 
+  /**
+   * Render function is automaticall called which renders JSX component.
+   *
+   * @returns
+   * @memberof Tabs
+   */
   render() {
     const { tab } = this.props;
 
     let homeClass = 'col-sm btnWithoutStyle ';
     let completedClass = 'col-sm btnWithoutStyle ';
     let remainingClass = 'col-sm btnWithoutStyle ';
-    if (tab === HOME) {
+
+    if (tab === Common.HOME) {
       homeClass += 'active';
-    }
-    else if (tab === COMPLETED) {
+    } else if (tab === Common.COMPLETED) {
       completedClass += 'active';
-    }
-    else if (tab === REMAINING) {
+    } else if (tab === Common.REMAINING) {
       remainingClass += 'active';
     }
 
     return (
       <div className='row tabs'>
         <button
-          value={HOME_TXT}
+          value={Common.HOME_TXT}
           onClick={this.handleClick}
           className={homeClass}
         >
-          {HOME_TXT}
+          {Common.HOME_TXT}
         </button>
         <button
-          value={COMPLETED_TXT}
+          value={Common.COMPLETED_TXT}
           onClick={this.handleClick}
           className={completedClass}
         >
-          {COMPLETED_TXT}
+          {Common.COMPLETED_TXT}
         </button>
         <button
-          value={REMAINING_TXT}
+          value={Common.REMAINING_TXT}
           onClick={this.handleClick}
           className={remainingClass}
         >
-          {REMAINING_TXT}
+          {Common.REMAINING_TXT}
         </button>
       </div>
     );
@@ -67,6 +77,3 @@ class Tabs extends React.Component {
 }
 
 export default Tabs;
-export const HOME_TXT = 'Home'
-export const COMPLETED_TXT = 'Completed';
-export const REMAINING_TXT = 'Remaining';
