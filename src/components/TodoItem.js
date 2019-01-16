@@ -44,7 +44,16 @@ class TodoItem extends React.Component {
    * @memberof TodoItem
    */
   render() {
-    const { item: { index, title, isCompleted, createdAt }, startEdit, deleteTodoItem } = this.props;
+    const {
+      item: {
+        index,
+        title,
+        createdAt,
+        isCompleted,
+      },
+      startEdit,
+      deleteTodoItem
+    } = this.props;
     const isComplete = isCompleted ? 'checked' : '';
     const titleClass = isCompleted ? 'completed-item' : '';
     const localeDate = new Date(createdAt).toLocaleString();
@@ -53,7 +62,7 @@ class TodoItem extends React.Component {
       <div className='row'>
         <div className='container-content-v-center left col-sm-8'>
           <input
-            type='radio'
+            type='checkbox'
             className='left'
             checked={isComplete}
             onChange={this.handleChecked} />

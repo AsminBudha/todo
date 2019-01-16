@@ -1,10 +1,11 @@
 import axios from 'axios';
+
 /**
  * Creates and instance of axios
  */
 const instance = axios.create({
+  responseType: 'json',
   baseURL: 'https://todo-react-sminmgr.herokuapp.com/todo',
-  responseType: 'json'
 });
 
 /**
@@ -14,9 +15,7 @@ const instance = axios.create({
  */
 async function get() {
   try {
-    const data = await instance.get('');
-
-    return Promise.resolve(data);
+    return await instance.get('');
   } catch (err) {
     return Promise.reject(err);
   }
@@ -31,9 +30,7 @@ async function get() {
  */
 async function post(obj) {
   try {
-    const data = await instance.post('', obj);
-
-    return Promise.resolve(data);
+    return await instance.post('', obj);
   } catch (err) {
     return Promise.reject(err);
   }
@@ -42,15 +39,13 @@ async function post(obj) {
 /**
  * DELETE method to delete todo in server with id.
  *
- * @param {Integer} id Todo to be removed with param id.
+ * @param {Number} id Todo to be removed with param id.
  *
  * @returns {Object<Promise>} Returns promise either resolved or rejected.
  */
 async function remove(id) {
   try {
-    const data = await instance.delete(`/${id}`);
-
-    return Promise.resolve(data);
+    return await instance.delete(`/${id}`);
   } catch (err) {
     return Promise.reject(err);
   }
@@ -59,16 +54,14 @@ async function remove(id) {
 /**
  * PUT method to replace todo with param object having param id.
  *
- * @param {Integer} id Id of todo to be edited.
+ * @param {Number} id Id of todo to be edited.
  * @param {Object} obj Changed object of an editing todo.
  *
  * @returns {Object<Promise>} Returns promise either resolved or rejected.
  */
 async function edit(id, obj) {
   try {
-    const data = await instance.put(`/${id}`, { ...obj });
-
-    return Promise.resolve(data);
+    return await instance.put(`/${id}`, { ...obj });
   } catch (err) {
     return Promise.reject(err);
   }
@@ -83,9 +76,7 @@ async function edit(id, obj) {
  */
 async function search(searchQuery) {
   try {
-    const data = await instance.get(`?q=${searchQuery}`);
-
-    return Promise.resolve(data);
+    return await instance.get(`?q=${searchQuery}`);
   } catch (err) {
     return Promise.reject(err);
   }

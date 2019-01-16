@@ -24,24 +24,23 @@ code {
   padding-right: 0px;
 }
 
-
 .btnWithoutStyle{
   background: transparent;
   border: transparent;
   padding: 10px;
-  border-bottom: 1px solid #adb5bd;/*2px solid gray;*/
+  border-bottom: 1px solid #adb5bd;
   color: whitesmoke;
 }
+
 .btnWithoutStyle:focus{
   outline: none;
 }
+
 .btnWithoutStyle.active{
-  border: 1px solid #adb5bd;/*2px solid gray;*/
-
+  border: 1px solid #adb5bd;
 }
-.tabs{
-  /* border-bottom: 2px solid gray; */
 
+.tabs{
   color: antiquewhite;
 }
 
@@ -49,6 +48,7 @@ code {
   padding-top: 20px;
   padding-bottom: 20px;
 }
+
 .action-btns{
   float: right;
   display: inline-table;
@@ -66,9 +66,11 @@ p{
   display: flex;
   align-items: center;
 }
+
 .container-content-v-center input{
   margin-right: 15px;
 }
+
 .app-name{
   text-align: center;
   padding: 10px 0px;
@@ -76,13 +78,16 @@ p{
   color: antiquewhite;
   box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.68);
 }
+
 .completed-item{
   text-decoration: line-through;
-    color: darkgray;
+  color: darkgray;
 }
+
 .todo-ul{
   padding-bottom: 20px;
 }
+
 .todo-text{
   width:90%;
   word-break: break-word;
@@ -92,7 +97,6 @@ p{
   .wrapper{
     max-width: 50%;
   }
-
 }
 
 @media (min-width: 576px) {

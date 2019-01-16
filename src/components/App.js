@@ -1,13 +1,13 @@
 import React from 'react';
 import { Spring } from 'react-spring';
 
-import Tabs from './components/Tabs';
-import InputBar from './components/InputBar';
-import TodoList from './components/TodoList';
+import Tabs from './Tabs';
+import InputBar from './InputBar';
+import TodoList from './TodoList';
+import http from '../services/http';
+import Common from '../constants/common';
 
-import './assets/css/';
-import http from './services/http';
-import Common from './constants/common';
+import '../assets/css';
 
 /**
  *Main class which handles overall app functionality and rendering
@@ -19,7 +19,6 @@ class App extends React.Component {
 
   /**
    *
-   *
    * @param {Object} props Object passed when intance is created.
    * @memberof App
    */
@@ -28,9 +27,9 @@ class App extends React.Component {
 
     this.state = {
       todos: [],
-      tab: Common.HOME,
-      editIndex: null,
       search: null,
+      editIndex: null,
+      tab: Common.HOME,
     };
 
   }
@@ -53,8 +52,8 @@ class App extends React.Component {
     };
     const todoData = http.post(obj);
 
-    todoData.then(() => {
-      todos = [obj, ...todos];
+    todoData.then((response) => {
+      todos = [response.data, ...todos];
       this.setState({
         todos
       });
@@ -72,21 +71,17 @@ class App extends React.Component {
 
     const obj = { ...todos[editIndex], title: todo, createdAt: currentDate };
 
-    http.edit(todos[editIndex].id, obj).then(() => {
-      const newTodo = todos.map((item, index) => {
+    http.edit(todos[editIndex].id, obj).then((response) => {
+      const editedTodo = todos.map((item, index) => {
         if (index !== editIndex) {
           return item;
         }
 
-        return {
-          ...item,
-          title: todo,
-          createdAt: currentDate
-        };
+        return response.data;
       });
 
       this.setState({
-        todos: newTodo,
+        todos: editedTodo,
         editIndex: null
       });
     });
@@ -95,21 +90,33 @@ class App extends React.Component {
   /**
    * Change todo item with index to completed or incompleted.
    *
-   * @param {int} index
+   * @param {Number} index
    * @param {bool} isCompleted
    */
   handleTodoChecked = (index, isCompleted) => {
-    const todos = this.state.todos.map((item) => ({ ...item }));
+    const { todos } = this.state;
 
-    todos[index].isCompleted = isCompleted;
-    this.setState({ todos });
+    const obj = ({ ...todos[index], isCompleted });
+
+    http.edit(obj.id, obj)
+      .then((response) => {
+        const editedTodos = todos.map((item, currentIndex) => {
+          if (currentIndex !== index) {
+            return item;
+          }
+
+          return response.data;
+        });
+
+        this.setState({ todos: editedTodos });
+      });
   }
 
   /**
    * Change current tab being selected.
    * Tab is based upon contants in utils file.
    *
-   * @param {int} tab Changed indicator of current tab.
+   * @param {Number} tab Changed indicator of current tab.
    */
   changeTab = (tab) => {
     this.setState({ tab });
@@ -118,27 +125,27 @@ class App extends React.Component {
   /**
    * Delete todo item with index index in state:todos.
    *
-   * @param {int} index Index of item to be deleted.
+   * @param {Number} index Index of item to be deleted.
    */
   deleteTodoItem = (index) => {
-    // Reset the edit if current editing item is deleted
-    this.setState({
-      editIndex: null
-    });
-
     const REMOVE_SINGLE_ELEMENT = 1;
     const todos = this.state.todos.map((item) => ({ ...item }));
 
-    http.remove(todos[index].id).then(() => {
-      todos.splice(index, REMOVE_SINGLE_ELEMENT);
-      this.setState({ todos });
-    });
+    http.remove(todos[index].id)
+      .then(() => {
+        todos.splice(index, REMOVE_SINGLE_ELEMENT);
+        // Reset the edit if current editing item is deleted
+        this.setState({
+          todos,
+          editIndex: null
+        });
+      });
   }
 
   /**
    * Set state with pattern which can be use to filter the todo list.
    *
-   * @param {string} pattern String to be used to filter todo list.
+   * @param {String} pattern String to be used to filter todo list.
    */
   search = (pattern) => {
     if (pattern) {
@@ -160,7 +167,7 @@ class App extends React.Component {
   /**
    * Store index and object in state which is going to be edited.
    *
-   * @param {int} index Index of todo item to be  edited.
+   * @param {Number} index Index of todo item to be  edited.
    */
   startEdit = (index) => {
     this.setState({
