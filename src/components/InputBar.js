@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 
 /**
  * Component with Input Field and Button in horizontal.
@@ -130,4 +132,14 @@ class InputBar extends React.Component {
   }
 }
 
+InputBar.propTypes = {
+  isSearch: PropTypes.bool,
+  editTodo: PropTypes.func,
+  editionObject: PropTypes.object,
+  submit: PropTypes.func.isRequired,
+  btnText: PropTypes.string.isRequired,
+  placeholderText: PropTypes.string.isRequired,
+};
+
 export default InputBar;
+

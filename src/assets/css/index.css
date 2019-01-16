@@ -52,6 +52,8 @@ code {
 .action-btns{
   float: right;
   display: inline-table;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 p{
@@ -91,6 +93,18 @@ p{
 .todo-text{
   width:90%;
   word-break: break-word;
+}
+
+.round-right{
+  border-top-right-radius: 10rem;
+  border-bottom-right-radius: 10rem;
+  width: 50%;
+}
+
+.round-left{
+  border-top-left-radius: 10rem;
+  border-bottom-left-radius: 10rem;
+  width: 50%;
 }
 
 @media (min-width: 992px) {

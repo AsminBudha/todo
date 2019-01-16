@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import TodoItem from './TodoItem';
 import Common from '../constants/common';
@@ -50,6 +51,14 @@ const TodoList = (props) => {
       {todoItems}
     </ul>
   );
+};
+
+TodoList.propTypes = {
+  filter: PropTypes.number.isRequired,
+  startEdit: PropTypes.func.isRequired,
+  deleteTodoItem: PropTypes.func.isRequired,
+  handleTodoChecked: PropTypes.func.isRequired,
+  todos: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default TodoList;
