@@ -2,15 +2,14 @@ import React from 'react';
 import { Spring } from 'react-spring';
 
 import Tabs from './Tabs';
-import InputBar from './InputBar';
 import TodoList from './TodoList';
 import http from '../services/http';
-import Common from '../constants/common';
-
-import '../assets/css';
 import WithAdd from '../hoc/WithAdd';
 import WithEdit from '../hoc/WithEdit';
+import Common from '../constants/common';
 import WithSearch from '../hoc/WithSearch';
+
+import '../assets/css';
 
 /**
  *Main class which handles overall app functionality and rendering
@@ -48,9 +47,9 @@ class App extends React.Component {
 
     this.idGenerate++;
     const obj = {
-      id: this.idGenerate,
       title: todo,
       isCompleted: false,
+      id: this.idGenerate,
       createdAt: currentDate
     };
     const todoData = http.post(obj);
@@ -71,7 +70,6 @@ class App extends React.Component {
   editTodo = (todo) => {
     const currentDate = new Date().toISOString();
     const { editIndex, todos } = this.state;
-
     const obj = { ...todos[editIndex], title: todo, createdAt: currentDate };
 
     http.edit(todos[editIndex].id, obj).then((response) => {
@@ -84,8 +82,8 @@ class App extends React.Component {
       });
 
       this.setState({
+        editIndex: null,
         todos: editedTodo,
-        editIndex: null
       });
     });
   }
@@ -205,20 +203,21 @@ class App extends React.Component {
    */
   render() {
     const { todos, editIndex, tab, search } = this.state;
+
     const btnText = editIndex !== null ? 'Save' : 'Add';
     const todoData = search || todos;
     const editionObject = editIndex !== null ? { ...todos[editIndex] } : null;
     const inputBar = editIndex !== null ?
       <WithEdit
+        btnText={btnText}
         submit={this.editTodo}
         editionObject={editionObject}
         placeholderText='Enter Todo Here'
-        btnText={btnText}
       /> :
       <WithAdd
+        btnText={btnText}
         submit={this.addTodo}
         placeholderText='Enter Todo Here'
-        btnText={btnText}
       />;
 
     return (

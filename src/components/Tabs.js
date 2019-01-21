@@ -78,8 +78,8 @@ class Tabs extends React.Component {
 }
 
 Tabs.propTypes = {
-  changeTab: PropTypes.func.isRequired,
   tab: PropTypes.number.isRequired,
+  changeTab: PropTypes.func.isRequired,
 };
 
 export default Tabs;

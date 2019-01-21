@@ -1,4 +1,5 @@
 import React from 'react';
+
 import InputBar from '../components/InputBar';
 
 /**
@@ -22,7 +23,6 @@ const withAdd = (Component) => {
         todoText: ''
       };
     }
-
 
     /**
      * Handle the change in input field.

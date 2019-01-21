@@ -1,8 +1,9 @@
 import React from 'react';
+
 import InputBar from '../components/InputBar';
 
 /**
- * HOC with Edit feature having UI input field and button.
+ * HOC with Search feature having UI input field and button.
  *
  * @param {Object<React.Component>} Component
  */
@@ -22,7 +23,6 @@ const withSearch = (Component) => {
         todoText: ''
       };
     }
-
 
     /**
      * Handle the change in input field.
