@@ -16,13 +16,6 @@ class InputBar extends React.Component {
    */
   constructor(props) {
     super(props);
-
-    this.state = {
-      todoText: ''
-    };
-
-    this.isOnEdit = false;
-    this.currentEditingId = null;
   }
 
   /**
@@ -46,27 +39,10 @@ class InputBar extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
 
-    const { todoText } = this.state;
+    const { handleSubmit } = this.props;
 
-    // if input text is blank do not add
-    if (!todoText) {
-      return;
-    }
+    handleSubmit();
 
-    const { submit, isSearch, editTodo } = this.props;
-
-    if (this.isOnEdit) {
-      editTodo(todoText);
-      this.isOnEdit = false;
-      this.currentEditingId = null;
-    } else {
-      submit(todoText);
-    }
-
-    // input is cleared after submission but not cleared when we are searching
-    if (!isSearch) {
-      this.setState({ todoText: '' });
-    }
   }
 
   /**
@@ -75,17 +51,7 @@ class InputBar extends React.Component {
    * @param {Object} event Event triggered by input field when something is changed.
    */
   handleChange = (event) => {
-    this.setState({
-      todoText: event.target.value
-    });
-
-    const { isSearch, submit } = this.props;
-
-    // if searching instantly submit so that list is filtered
-    if (isSearch) {
-      submit(event.target.value);
-    }
-
+    this.props.handleChange(event.target.value);
   }
 
   /**
@@ -95,24 +61,13 @@ class InputBar extends React.Component {
    * @memberof InputBar
    */
   render() {
-    const { todoText } = this.state;
-    const { btnText, placeholderText, editionObject } = this.props;
-    let text = todoText;
-
-    if (editionObject && this.currentEditingId !== editionObject.id) {
-      this.isOnEdit = true;
-      this.currentEditingId = editionObject.id;
-      text = editionObject.title;
-    } else if (!editionObject) {
-      this.isOnEdit = false;
-      this.currentEditingId = null;
-    }
+    const { btnText, placeholderText, todoText } = this.props;
 
     return (
       <div className='inputBar input-group mb-3'>
         <input
           type='text'
-          value={text}
+          value={todoText}
           className="form-control"
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}

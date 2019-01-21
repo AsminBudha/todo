@@ -8,6 +8,9 @@ import http from '../services/http';
 import Common from '../constants/common';
 
 import '../assets/css';
+import WithAdd from '../hoc/WithAdd';
+import WithEdit from '../hoc/WithEdit';
+import WithSearch from '../hoc/WithSearch';
 
 /**
  *Main class which handles overall app functionality and rendering
@@ -204,8 +207,19 @@ class App extends React.Component {
     const { todos, editIndex, tab, search } = this.state;
     const btnText = editIndex !== null ? 'Save' : 'Add';
     const todoData = search || todos;
-
     const editionObject = editIndex !== null ? { ...todos[editIndex] } : null;
+    const inputBar = editIndex !== null ?
+      <WithEdit
+        submit={this.editTodo}
+        editionObject={editionObject}
+        placeholderText='Enter Todo Here'
+        btnText={btnText}
+      /> :
+      <WithAdd
+        submit={this.addTodo}
+        placeholderText='Enter Todo Here'
+        btnText={btnText}
+      />;
 
     return (
       <Spring
@@ -217,20 +231,13 @@ class App extends React.Component {
           <div style={props} className='myContainer'>
             <Tabs changeTab={this.changeTab} tab={tab} />
 
-            <InputBar
-              isSearch={true}
+            <WithSearch
               btnText={'Search'}
               submit={this.search}
               placeholderText='Search here'
             />
 
-            <InputBar
-              submit={this.addTodo}
-              editTodo={this.editTodo}
-              editionObject={editionObject}
-              placeholderText='Enter Todo Here'
-              btnText={btnText}
-            />
+            {inputBar}
 
             <TodoList
               todos={todoData}
