@@ -1,6 +1,7 @@
 import React from 'react';
 
 import InputBar from '../components/InputBar';
+import AppConstants from '../constants/common';
 
 /**
  * HOC with Search feature having UI input field and button.
@@ -27,7 +28,7 @@ const withSearch = (Component) => {
     /**
      * Handle the change in input field.
      *
-     * @param {Object} todoText Text entered in input field.
+     * @param {String} todoText Text entered in input field.
      */
     handleChange = (todoText) => {
       this.setState({
@@ -43,7 +44,7 @@ const withSearch = (Component) => {
      * @memberof InputBar
      */
     handleSubmit = (todoText) => {
-      if (!todoText && todoText !== '') {
+      if (typeof (todoText) !== 'string') {
         todoText = this.state.todoText;
       }
       const { submit } = this.props;
@@ -60,7 +61,12 @@ const withSearch = (Component) => {
       const { todoText } = this.state;
 
       return (
-        <Component {...this.props} todoText={todoText} handleChange={this.handleChange} handleSubmit={this.handleSubmit} btnText='Search' />
+        <Component {...this.props}
+          todoText={todoText}
+          handleChange={this.handleChange}
+          handleSubmit={this.handleSubmit}
+          btnText={AppConstants.SEARCH_TXT}
+        />
       );
     }
   };

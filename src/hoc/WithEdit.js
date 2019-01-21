@@ -1,6 +1,7 @@
 import React from 'react';
 
 import InputBar from '../components/InputBar';
+import AppConstatns from '../constants/common';
 
 /**
  * HOC with Edit feature having UI input field and button.
@@ -62,10 +63,12 @@ const withEdit = (Component) => {
      *
      */
     componentDidMount() {
-      const { editionObject } = this.props;
+      const { editionObject: {
+        title = ''
+      } } = this.props;
 
       this.setState({
-        todoText: editionObject.title
+        todoText: title
       });
     }
 
@@ -78,7 +81,12 @@ const withEdit = (Component) => {
       const { todoText } = this.state;
 
       return (
-        <Component {...this.props} todoText={todoText} handleChange={this.handleChange} handleSubmit={this.handleSubmit} btnText='Save' />
+        <Component {...this.props}
+          todoText={todoText}
+          btnText={AppConstatns.SAVE_TXT}
+          handleChange={this.handleChange}
+          handleSubmit={this.handleSubmit}
+        />
       );
     }
   };

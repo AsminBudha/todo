@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import AppConstants from '../constants/common';
+
 /**
  * Renders single item todo item.
  *
@@ -77,13 +79,13 @@ class TodoItem extends React.Component {
             className='btn btn-primary round-left'
             onClick={() => startEdit(index)}
           >
-            Edit
+            {AppConstants.EDIT_TXT}
           </button>
           <button
             className='btn btn-primary round-right'
             onClick={() => deleteTodoItem(index)}
           >
-            Delete
+            {AppConstants.DELETE_TXT}
           </button>
         </span>
       </div>

@@ -204,18 +204,16 @@ class App extends React.Component {
   render() {
     const { todos, editIndex, tab, search } = this.state;
 
-    const btnText = editIndex !== null ? 'Save' : 'Add';
     const todoData = search || todos;
-    const editionObject = editIndex !== null ? { ...todos[editIndex] } : null;
-    const inputBar = editIndex !== null ?
+    const hasIndex = editIndex !== null;
+    const editionObject = hasIndex ? { ...todos[editIndex] } : null;
+    const inputBar = hasIndex ?
       <WithEdit
-        btnText={btnText}
         submit={this.editTodo}
         editionObject={editionObject}
         placeholderText='Enter Todo Here'
       /> :
       <WithAdd
-        btnText={btnText}
         submit={this.addTodo}
         placeholderText='Enter Todo Here'
       />;

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import InputBar from '../components/InputBar';
+import AppConstants from '../constants/common';
 
 /**
  * HOC with Add feature having UI input field and button.
@@ -66,7 +67,12 @@ const withAdd = (Component) => {
       const { todoText } = this.state;
 
       return (
-        <Component {...this.props} todoText={todoText} handleChange={this.handleChange} handleSubmit={this.handleSubmit} btnText='Add' />
+        <Component {...this.props}
+          todoText={todoText}
+          btnText={AppConstants.ADD_TXT}
+          handleChange={this.handleChange}
+          handleSubmit={this.handleSubmit}
+        />
       );
     }
   };

@@ -52,8 +52,7 @@ code {
 .action-btns{
   float: right;
   display: inline-table;
-  margin-left: 0px;
-  margin-right: 0px;
+  margin: auto 0px;
 }
 
 p{
