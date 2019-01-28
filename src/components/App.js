@@ -2,10 +2,12 @@ import React from 'react';
 import { Spring } from 'react-spring';
 
 import Tabs from './Tabs';
-import InputBar from './InputBar';
 import TodoList from './TodoList';
 import http from '../services/http';
+import WithAdd from '../hoc/WithAdd';
+import WithEdit from '../hoc/WithEdit';
 import Common from '../constants/common';
+import WithSearch from '../hoc/WithSearch';
 
 import '../assets/css';
 
@@ -45,9 +47,9 @@ class App extends React.Component {
 
     this.idGenerate++;
     const obj = {
-      id: this.idGenerate,
       title: todo,
       isCompleted: false,
+      id: this.idGenerate,
       createdAt: currentDate
     };
     const todoData = http.post(obj);
@@ -68,7 +70,6 @@ class App extends React.Component {
   editTodo = (todo) => {
     const currentDate = new Date().toISOString();
     const { editIndex, todos } = this.state;
-
     const obj = { ...todos[editIndex], title: todo, createdAt: currentDate };
 
     http.edit(todos[editIndex].id, obj).then((response) => {
@@ -81,8 +82,8 @@ class App extends React.Component {
       });
 
       this.setState({
+        editIndex: null,
         todos: editedTodo,
-        editIndex: null
       });
     });
   }
@@ -202,10 +203,20 @@ class App extends React.Component {
    */
   render() {
     const { todos, editIndex, tab, search } = this.state;
-    const btnText = editIndex !== null ? 'Save' : 'Add';
-    const todoData = search || todos;
 
-    const editionObject = editIndex !== null ? { ...todos[editIndex] } : null;
+    const todoData = search || todos;
+    const hasIndex = editIndex !== null;
+    const editionObject = hasIndex ? { ...todos[editIndex] } : null;
+    const inputBar = hasIndex ?
+      <WithEdit
+        submit={this.editTodo}
+        editionObject={editionObject}
+        placeholderText='Enter Todo Here'
+      /> :
+      <WithAdd
+        submit={this.addTodo}
+        placeholderText='Enter Todo Here'
+      />;
 
     return (
       <Spring
@@ -217,20 +228,13 @@ class App extends React.Component {
           <div style={props} className='myContainer'>
             <Tabs changeTab={this.changeTab} tab={tab} />
 
-            <InputBar
-              isSearch={true}
+            <WithSearch
               btnText={'Search'}
               submit={this.search}
               placeholderText='Search here'
             />
 
-            <InputBar
-              submit={this.addTodo}
-              editTodo={this.editTodo}
-              editionObject={editionObject}
-              placeholderText='Enter Todo Here'
-              btnText={btnText}
-            />
+            {inputBar}
 
             <TodoList
               todos={todoData}

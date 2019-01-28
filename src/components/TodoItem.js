@@ -1,4 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
+import AppConstants from '../constants/common';
 
 /**
  * Renders single item todo item.
@@ -34,7 +37,6 @@ class TodoItem extends React.Component {
     this.setState({
       checked: !checked
     });
-
   }
 
   /**
@@ -72,23 +74,30 @@ class TodoItem extends React.Component {
             <small className='text-muted'>Created At: {localeDate}</small>
           </div>
         </div>
-        <span className="badge badge-primary badge-pill action-btns col-sm-4">
+        <span className="badge action-btns col-sm-4 row">
           <button
-            className='btn btn-primary'
+            className='btn btn-primary round-left'
             onClick={() => startEdit(index)}
           >
-            Edit
+            {AppConstants.EDIT_TXT}
           </button>
           <button
-            className='btn btn-primary'
+            className='btn btn-primary round-right'
             onClick={() => deleteTodoItem(index)}
           >
-            Delete
+            {AppConstants.DELETE_TXT}
           </button>
         </span>
       </div>
     );
   }
 }
+
+TodoItem.propTypes = {
+  item: PropTypes.object.isRequired,
+  startEdit: PropTypes.func.isRequired,
+  deleteTodoItem: PropTypes.func.isRequired,
+  handleTodoChecked: PropTypes.func.isRequired,
+};
 
 export default TodoItem;

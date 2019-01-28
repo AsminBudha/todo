@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Common from '../constants/common';
 
@@ -75,5 +76,10 @@ class Tabs extends React.Component {
     );
   }
 }
+
+Tabs.propTypes = {
+  tab: PropTypes.number.isRequired,
+  changeTab: PropTypes.func.isRequired,
+};
 
 export default Tabs;
